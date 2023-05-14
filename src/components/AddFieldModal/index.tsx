@@ -10,43 +10,43 @@ import {
 import { useState } from "react";
 
 export interface inputProps {
-    handleFieldDetail: any;
+  handleFieldDetail: any;
 }
-const AddFieldModal = ({handleFieldDetail} : inputProps) => {
+const AddFieldModal = ({ handleFieldDetail }: inputProps) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [checked, setChecked] = useState(false);
   const [title, setTitle] = useState("عنوان فیلد");
   const [descriptiveLabel, setDescriptiveLabel] = useState("عنوان نمایشی");
+  const [selectValue, setSelectValue] = useState<string | null>(null);
 
   const fieldDetail = {
     title,
     descriptiveLabel,
     checked,
-  }
+    selectValue,
+  };
+  const handleOnAddNewField = () => {
+    console.log(fieldDetail);
+    handleFieldDetail(fieldDetail);
+    console.log("selectValue is", selectValue);
+
+    close();
+    // let newField = { title, descriptiveLabel, checked };
+    // setDetail([...detail, newField]);
+  };
 
   const handleOnTitle = (event: any) => {
-    console.log(event.target.value);
     let data = event.target.value;
     setTitle(data);
-    console.log(title);
   };
   const handleOnDescreptiveLabel = (event: any) => {
-    console.log(event.target.value);
     let data = event.target.value;
     setDescriptiveLabel(data);
     console.log(descriptiveLabel);
   };
-
-  const handleOnAddNewField = (e) => {
-    console.log(fieldDetail);
-    handleFieldDetail(fieldDetail)
-    e.preventDefault();
-    // let newField = { title, descriptiveLabel, checked };
-    // setDetail([...detail, newField]);
-  }
   return (
     <>
-      <Modal opened={opened} onClose={close} title="افزودن فیلد">
+      <Modal dir="rtl" ta="justify" opened={opened} onClose={close} title="افزودن فیلد">
         <TextInput
           label="لطفا عنوان فیلد را وارد کنید "
           placeholder="عنوان فیلد"
@@ -59,30 +59,38 @@ const AddFieldModal = ({handleFieldDetail} : inputProps) => {
           onChange={(event) => handleOnDescreptiveLabel(event)}
         />
         <Select
-          label="Your favorite framework/library"
-          placeholder="Pick one"
+        mt={10}
+          label="نوع داده"
+          placeholder="یکی را انتخاب کنید"
+          searchable
+          dropdownPosition="bottom"
           data={[
-            { value: "react", label: "React" },
-            { value: "ng", label: "Angular" },
-            { value: "svelte", label: "Svelte" },
-            { value: "vue", label: "Vue" },
+            { value: "number", label: "عددی" },
+            { value: "string", label: "رشته ای" },
+            { value: "text", label: "توضیحات متنی" },
+            { value: "Date", label: "تاریخ" },
+            { value: "DateRange", label: "بازه تاریخی" },
+            { value: "Select", label: "انتخاب از لیست" },
+            { value: "Radio", label: "رادیویی" },
+            { value: "CheckBox", label: "چک باکس" },
           ]}
+          value={selectValue}
+          onChange={(e) => setSelectValue(e)}
         />
         <Checkbox
+        my={10}
           label="فیلد اجباری باشد"
           checked={checked}
           onChange={(event) => setChecked(event.currentTarget.checked)}
         />
-        <Button
-          onClick={handleOnAddNewField}
-        >
-          Submit
-        </Button>
+
+        <Button variant="light" onClick={handleOnAddNewField}>Submit</Button>
       </Modal>
       <Group position="center">
-        <Button onClick={open}>Open modal</Button>
+        <Button color="teal" radius="lg" size="md" my={20} onClick={open}>افزودن فیلد جدید</Button>
       </Group>
     </>
   );
 };
+
 export default AddFieldModal;
